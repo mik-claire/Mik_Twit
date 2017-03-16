@@ -1,0 +1,211 @@
+﻿<metro:MetroWindow x:Class="Mik_Twit.View.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                   xmlns:control="clr-namespace:Mik_Twit.View.Control"
+                   xmlns:chrome="http://schemes.grabacr.net/winfx/2014/chrome"
+                   xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
+                   Title="Mik_Twit" Height="750" Width="525"
+                   Icon="pack://application:,,,/Resources/Image/task_icon.ico"
+                   Background="#312F2F" FontSize="11"
+                   Loaded="Window_Loaded"
+                   KeyDown="Window_KeyDown"
+                   StateChanged="MetroWindow_StateChanged"
+                   Closing="MetroWindow_Closing">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30"
+                      ResizeBorderThickness="0" />
+    </WindowChrome.WindowChrome>
+    <i:Interaction.Behaviors>
+        <chrome:MetroChromeBehavior ActiveBrush="DeepSkyBlue"
+                                    InactiveBrush="DarkGray"
+                                    Mode="VisualStudio2013" />
+    </i:Interaction.Behaviors>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <!-- #region Caption area -->
+        <Grid Grid.Row="0">
+            <DockPanel x:Name="captionBar"
+                       x:FieldModifier="private"
+                       metro:MetroWindow.IsCaptionBar="True">
+                <Border DockPanel.Dock="Bottom"
+					Height="4" />
+                <!-- icon
+                <kcvc:AppIcon Width="36"
+                              Height="36"
+						      Background="Transparent"
+						      AnchorVisibility="Collapsed"
+						      BandVisibility="Collapsed" />
+                -->
+                <Image Width="24" Height="24"
+                       Margin="6"
+                       Source="pack://application:,,,/Resources/Image/task_icon.ico" />
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                    <!-- <metro:CaptionButton IsChecked="{Binding Path=Settings.TopMost.Value, Mode=TwoWay}"/> -->
+                    <metro:SystemButtons />
+                </StackPanel>
+                <TextBlock x:Name="textBlock_Title" Text="{Binding Path=Title}"
+                           Margin="2,0,8,0" FontSize="13" FontFamily="Meiryo"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Grid>
+        <!-- #endregion -->
+
+        <Grid Grid.Row="1" DataContext="{Binding}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85" />
+                <RowDefinition Height="{Binding Path=ReplyToRowDefinition}" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+
+            <Grid Grid.Row="0" x:Name="tweetGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="95"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="0">
+                    <Image x:Name="image_UserIcon"
+                           Source="{Binding Path=IconUrl}"
+                           Height="40" Width="40" Cursor="Hand"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                           MouseLeftButtonDown="image_UserIcon_MouseLeftButtonDown"/>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <TextBox x:Name="textBox_Tweet"
+                         Margin="10" Background="DimGray" Foreground="AliceBlue"
+                         TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"
+                         AllowDrop="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         KeyDown="textBox_Tweet_KeyDown"
+                         TextChanged="textBox_Tweet_TextChanged"
+                         PreviewDragOver="textBox_Tweet_PreviewDragOver"
+                         Drop="textBox_Tweet_Drop"/>
+                </Grid>
+
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Button x:Name="button_Tweet" Content="Tweet"
+                                BorderBrush="LightSkyBlue" BorderThickness="1"
+                                Margin="0,0,10,8" Height="24" Width="75"
+                                VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                Background="DimGray" Foreground="AliceBlue"
+                                Click="Button_Tweet_Click" />
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <StackPanel>
+                            <TextBlock x:Name="textBlock_Remain" Margin="2" DataContext="{Binding}" Foreground="AliceBlue">
+                                <Run Text="Remain: " Foreground="{Binding Path=TextColor}" />
+                                <Run Text="{Binding Path=Remain}" Foreground="{Binding Path=TextColor}" />
+                            </TextBlock>
+                            <TextBlock x:Name="textBlock_Media" Margin="2" DataContext="{Binding}"
+                                       MouseLeftButtonDown="textBlock_Media_MouseLeftButtonDown">
+                                <Run Text="Media: " Foreground="AliceBlue" />
+                                <Run Text="{Binding Path=Count}" Foreground="AliceBlue" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <TextBlock x:Name="textBlock_ReplyTo" DataContext="{Binding}"
+                           Margin="10" Foreground="AliceBlue"
+                           Width="Auto" TextWrapping="Wrap" FontSize="9"
+                           MouseLeftButtonDown="textBlock_ReplyTo_MouseLeftButtonDown">
+                    <Run Text="@" />
+                    <Run Text="{Binding Path=ScreenName}" />
+                    <Run Text=" :" />
+                    <Run Text="{Binding Path=Text}" />
+                </TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <TabControl Background="#312F2F">
+                    <TabItem Header="Home" Background="DimGray">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Foreground" Value="AliceBlue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <control:TimeLineViewer x:Name="timeLineViewer_Home"/>
+                    </TabItem>
+                    <TabItem Header="Mention" Background="DimGray">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Foreground" Value="AliceBlue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <control:TimeLineViewer x:Name="timeLineViewer_Mention"/>
+                    </TabItem>
+                    <TabItem Header="DM" Background="DimGray">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Foreground" Value="AliceBlue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <control:DirectMessageListViewer x:Name="DmListViewer_DM"/>
+                    </TabItem>
+                    <TabItem Header="Fav" Background="DimGray">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Foreground" Value="AliceBlue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="RoyalBlue" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <control:TimeLineViewer x:Name="timeLineViewer_Fav"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</metro:MetroWindow>

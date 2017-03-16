@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="Mik_Twit.View.Control.UserListViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        
+        <ListBox x:Name="listBox_UserList" ItemsSource="{Binding}"
+                 Margin="10"
+                 Background="DimGray"
+                 FocusVisualStyle="{x:Null}"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="True"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <EventSetter Event="ScrollBar.ValueChanged" Handler="listBox_UserList_ScrollBarValueChanged" />
+                </Style>
+            </ListBox.Style>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"
+                                            CanVerticallyScroll="True"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="42" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <StackPanel Orientation="Vertical">
+                                <Image x:Name="image_Icon" Source="{Binding Path=IconUrl}" Margin="5"
+                                       Height="32" Width="32" VerticalAlignment="Top" Cursor="Hand"/>
+                                <Image x:Name="image_Lock" Margin="3, 0" Height="15" Width="15"
+                                           Visibility="{Binding Path=LockIconVisibility}"
+                                           Source="pack://application:,,,/Resources/Image/Lock_1.png"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Column="1">
+
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock TextWrapping="NoWrap" Foreground="Lavender">
+                                        <Run Text="{Binding Path=ScreenName2}" />
+                                </TextBlock>
+                                <TextBlock TextWrapping="NoWrap" Foreground="Lavender">
+                                        <Run Text="{Binding Path=Name}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <EventSetter Event="PreviewMouseLeftButtonDown"
+                                 Handler="listBox_UserList_Item_PreviewMouseLeftButtonDown" />
+                    <Setter Property="OverridesDefaultStyle" Value="True" />
+                    <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ContentControl}">
+                                <Border Background="{Binding Path=BackColor}">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                                        <Border Background="Plum">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <!--
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                                        <Border Background="#ffccff">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        -->
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+            
+    </Grid>
+</UserControl>
