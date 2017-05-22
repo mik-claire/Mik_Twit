@@ -6,6 +6,11 @@
 
         public ContentsItem(string contentsUrl)
         {
+            if (!contentsUrl.EndWith(":orig"))
+            {
+                contentsUrl += ":orig";
+            }
+            
             this.ContentsUrl = contentsUrl;
         }
     }
