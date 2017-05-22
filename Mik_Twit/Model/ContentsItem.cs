@@ -6,7 +6,7 @@
 
         public ContentsItem(string contentsUrl)
         {
-            if (!contentsUrl.EndWith(":orig"))
+            if (!contentsUrl.EndsWith(":orig"))
             {
                 contentsUrl += ":orig";
             }
